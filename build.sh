@@ -1,0 +1,2 @@
+GO_VERSION="$(go version)"
+go build -ldflags "-X \"main.version=${GO_VERSION}\"" -o functions/main ./...

@@ -3,9 +3,13 @@ package main
 import (
 	"fmt"
 	"html"
+	"regexp"
 	"strings"
 	"time"
 )
+
+// XML 1.0 acceptable charsets https://www.w3.org/TR/xml/#charsets
+const xmlCharSetRegexp = "[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]"
 
 // AtomFeed is feed generator
 type AtomFeed struct {
@@ -32,9 +36,9 @@ func (a AtomFeed) atomMakeRootTag() string {
 
 // escape html and SMA feed injected control char like U+0008 Backspace.
 func escapeString(s string) string {
-	ss := strings.ReplaceAll(s, "\b", "")
+	reg := regexp.MustCompile(xmlCharSetRegexp)
+	ss := reg.ReplaceAllString(s, "")
 	return html.EscapeString(ss)
-	// return html.EscapeString(s)
 }
 
 func (a AtomFeed) atomMakeEntries() string {
